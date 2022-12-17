@@ -1,10 +1,10 @@
 package com.example.homework_hogwards.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Faculty {
@@ -14,7 +14,11 @@ public class Faculty {
     private String name;
     private String color;
 
+    @JsonBackReference
+    @OneToMany(mappedBy = "faculty")
+    private Set<Student> students;
 
+    public Faculty() {}
     public String getName() {
         return name;
     }
@@ -52,6 +56,14 @@ public class Faculty {
     public Faculty fillByFaculty(Faculty faculty) {
         color = faculty.color;
         name = faculty.name;
+        return this;
+    }
+    public Set<Student> getStudents() {
+        return students;
+    }
+
+    public Faculty setStudents(Set<Student> students) {
+        this.students = students;
         return this;
     }
 }

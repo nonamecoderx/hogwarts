@@ -2,11 +2,13 @@ package com.example.homework_hogwards.service;
 
 import com.example.homework_hogwards.exception.InvalidIdException;
 import com.example.homework_hogwards.exception.NotFoundException;
+import com.example.homework_hogwards.model.Faculty;
 import com.example.homework_hogwards.model.Student;
 import com.example.homework_hogwards.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -39,5 +41,13 @@ public class StudentService {
 
     public List<Student> getAll() {
         return studentRepository.findAll();
+    }
+    public Optional<Student> findByAgeBetween(int fromAge, int toAge) {
+        return studentRepository.findByAgeBetween(fromAge, toAge);
+    }
+
+    public Faculty getStudentsFaculty(Long studentId) {
+        Student student = studentRepository.findById(studentId).orElseThrow(NotFoundException::new);
+        return student.getFaculty();
     }
 }

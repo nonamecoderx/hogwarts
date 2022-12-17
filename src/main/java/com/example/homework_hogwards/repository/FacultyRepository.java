@@ -5,8 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FacultyRepository extends JpaRepository <Faculty,Long>{
-    List<Faculty> findByColor(String color);
+    Optional<Faculty> findByColor(String color);
+    Optional<Faculty> findByColorContainingIgnoreCase(String color);
+    Optional<Faculty> findByNameContainingIgnoreCase(String name);
 }
