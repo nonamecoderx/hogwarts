@@ -20,7 +20,7 @@ public class AvatarService {
     private final StudentRepository studentRepository;
     private final AvatarRepository avatarRepository;
 
-    @Value("$C://")
+    @Value("${path.to.avatars.folder}")
     private String avatarsDir;
 
     public AvatarService(StudentRepository studentRepository, AvatarRepository avatarRepository) {
