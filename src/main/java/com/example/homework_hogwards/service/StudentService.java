@@ -2,61 +2,52 @@ package com.example.homework_hogwards.service;
 
 import com.example.homework_hogwards.exception.InvalidIdException;
 import com.example.homework_hogwards.exception.NotFoundException;
+import com.example.homework_hogwards.model.Faculty;
 import com.example.homework_hogwards.model.Student;
+import com.example.homework_hogwards.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class StudentService {
-    private static Long counter = 0L;
-    private final Map<Long, Student> students;
-
-    public StudentService() {
-        students = new HashMap<>();
-    }
-
-    public StudentService(Map<Long, Student> students) {
-        this.students = students;
+    private final StudentRepository studentRepository;
+    public StudentService (StudentRepository studentRepository){
+        this.studentRepository=studentRepository;
     }
 
     public Student createStudent(Student student) {
-        if (student.getId() <= counter) {
-            throw new InvalidIdException();
-        }
-        students.put(++counter, student);
-        return student;
+      return this.studentRepository.save(student);
     }
 
     public Student getStudentById(Long studentId) {
-        if (!students.containsKey(studentId)) {
-            throw new NotFoundException();
-        }
-        return students.get(studentId);
+        return studentRepository.findById(studentId).orElseThrow(NotFoundException::new);
     }
 
     public Student updateStudent(Long studentId, Student student) {
-        Student innerStudent = getStudentById(studentId);
-        return innerStudent.fillByStudent(student);
+        Student oldStudent = studentRepository.findById(student.getId()).orElseThrow(InvalidIdException::new);
+        return studentRepository.save(oldStudent.fillByStudent(student));
     }
 
     public Student deleteStudent(Long studentId) {
-        return students.remove(getStudentById(studentId).getId());
+        studentRepository.deleteById(studentId);
+        return null;
     }
 
     public List<Student> findByAge(int age) {
-        return students
-                .values()
-                .stream()
-                .filter(s -> s.getAge() == age)
-                .collect(Collectors.toList());
+        return studentRepository.findByAge(age);
     }
 
     public List<Student> getAll() {
-        return new ArrayList<>(students.values());
+        return studentRepository.findAll();
+    }
+    public Optional<Student> findByAgeBetween(int fromAge, int toAge) {
+        return studentRepository.findByAgeBetween(fromAge, toAge);
+    }
+
+    public Faculty getStudentsFaculty(Long studentId) {
+        Student student = studentRepository.findById(studentId).orElseThrow(NotFoundException::new);
+        return student.getFaculty();
     }
 }
