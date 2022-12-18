@@ -11,11 +11,16 @@ public class Student {
     private Long id;
     private String name;
     private int age;
+
+    @OneToOne
+    private Avatar avatar;
+
     @ManyToOne
     @JsonManagedReference
     private Faculty faculty;
 
-    public Student() {}
+    public Student() {
+    }
 
     public String getName() {
         return name;
@@ -66,3 +71,12 @@ public class Student {
         return this;
     }
 }
+   /* public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public Student setAvatar(Avatar avatar) {
+        this.avatar = avatar;
+        return this;
+    }
+}*/

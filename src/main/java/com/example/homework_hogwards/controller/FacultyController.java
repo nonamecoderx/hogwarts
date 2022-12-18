@@ -29,9 +29,9 @@ public class FacultyController {
         return facultyService.createFaculty(student);
     }
 
-    @GetMapping("{studentId}")
-    public Faculty getFaculty(@PathVariable Long studentId) {
-        return facultyService.getFacultyById(studentId);
+    @GetMapping("{facultyId}")
+    public Faculty getFaculty(@PathVariable Long facultyId) {
+        return facultyService.getFacultyById(facultyId);
     }
 
     @PutMapping("/update")
