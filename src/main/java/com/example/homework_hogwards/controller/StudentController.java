@@ -1,10 +1,12 @@
 package com.example.homework_hogwards.controller;
 
+import com.example.homework_hogwards.model.Faculty;
 import com.example.homework_hogwards.model.Student;
 import com.example.homework_hogwards.service.StudentService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/student")
@@ -43,5 +45,14 @@ public class StudentController {
     @GetMapping("/find")
     public List<Student> find(@RequestParam int age) {
         return studentService.findByAge(age);
+    }
+    @GetMapping("/findByAgeBetween")
+    public Optional<Student> findByAgeBetween(@RequestParam int fromAge, @RequestParam int toAge) {
+        return studentService.findByAgeBetween(fromAge, toAge);
+    }
+
+    @GetMapping("/{studentId}/faculties")
+    public Faculty getStudentsFaculties(@PathVariable Long studentId) {
+        return studentService.getStudentsFaculty(studentId);
     }
 }

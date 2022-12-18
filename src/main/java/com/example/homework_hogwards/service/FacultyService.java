@@ -3,60 +3,55 @@ package com.example.homework_hogwards.service;
 import com.example.homework_hogwards.exception.InvalidIdException;
 import com.example.homework_hogwards.exception.NotFoundException;
 import com.example.homework_hogwards.model.Faculty;
+import com.example.homework_hogwards.model.Student;
+import com.example.homework_hogwards.repository.FacultyRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class FacultyService {
-    private static Long counter = 0L;
-    private final Map<Long, Faculty> faculties;
+    private final FacultyRepository facultyRepository;
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
 
-    public FacultyService() {
-        faculties = new HashMap<>();
-    }
-
-    public FacultyService(Map<Long, Faculty> faculties) {
-        this.faculties = faculties;
     }
 
     public Faculty createFaculty(Faculty faculty) {
-        if (faculty.getId() <= counter) {
-            throw new InvalidIdException();
-        }
-        faculties.put(++counter, faculty);
-        return faculty;
+        return facultyRepository.save(faculty);
     }
 
     public Faculty getFacultyById(Long facultyId) {
-        if (!faculties.containsKey(facultyId)) {
-            throw new NotFoundException();
-        }
-        return faculties.get(facultyId);
+        return facultyRepository.findById(facultyId).orElseThrow(NotFoundException::new);
     }
 
     public Faculty updateFaculty(Long facultyId, Faculty faculty) {
-        Faculty innerFaculty = getFacultyById(facultyId);
-        return innerFaculty.fillByFaculty(faculty);
+        Faculty oldFaculty = facultyRepository.findById(faculty.getId()).orElseThrow(InvalidIdException::new);
+        return facultyRepository.save(oldFaculty.fillByFaculty(faculty));
     }
 
     public Faculty deleteFaculty(Long facultyId) {
-        return faculties.remove(getFacultyById(facultyId).getId());
+        facultyRepository.deleteById(facultyId);
+        return null;
     }
 
-    public List<Faculty> findByColor(String color) {
-        return faculties
-                .values()
-                .stream()
-                .filter(f -> f.getColor().equals(color))
-                .collect(Collectors.toList());
+    public Optional<Faculty> findByColor(String color) {
+        return facultyRepository.findByColor(color);
     }
 
     public List<Faculty> getAll() {
-        return new ArrayList<>(faculties.values());
+        return facultyRepository.findAll();
+    }
+    public Optional<Faculty> findByColorContainingIgnoreCase(String color) {
+        return facultyRepository.findByColorContainingIgnoreCase(color);
+    }
+    public Optional<Faculty> findByNameContainingIgnoreCase(String name) {
+        return facultyRepository.findByNameContainingIgnoreCase(name);
+    }
+    public Set<Student> getFacultyStudents(Long facultyId) {
+        Faculty faculty = facultyRepository.findById(facultyId).orElseThrow(InvalidIdException::new);
+        return faculty.getStudents();
     }
 }
