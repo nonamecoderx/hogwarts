@@ -70,8 +70,8 @@ public class Student {
         this.faculty = faculty;
         return this;
     }
-}
-   /* public Avatar getAvatar() {
+
+    public Avatar getAvatar() {
         return avatar;
     }
 
@@ -79,4 +79,4 @@ public class Student {
         this.avatar = avatar;
         return this;
     }
-}*/
+}

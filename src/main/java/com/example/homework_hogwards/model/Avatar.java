@@ -1,9 +1,14 @@
 package com.example.homework_hogwards.model;
 
+
+
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.Lob;
+import java.util.Arrays;
+import java.util.Objects;
 
 @Entity
 public class Avatar {
@@ -13,55 +18,78 @@ public class Avatar {
     private String filePath;
     private long fileSize;
     private String mediaType;
+
+    @Lob
     private byte[] data;
-    @OneToOne
-    private Student student;
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public Avatar setId(Long id) {
         this.id = id;
+        return this;
     }
 
     public String getFilePath() {
         return filePath;
     }
 
-    public void setFilePath(String filePath) {
+    public Avatar setFilePath(String filePath) {
         this.filePath = filePath;
+        return this;
     }
 
     public long getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(long fileSize) {
+    public Avatar setFileSize(long fileSize) {
         this.fileSize = fileSize;
+        return this;
     }
 
     public String getMediaType() {
         return mediaType;
     }
 
-    public void setMediaType(String mediaType) {
+    public Avatar setMediaType(String mediaType) {
         this.mediaType = mediaType;
+        return this;
     }
 
     public byte[] getData() {
         return data;
     }
 
-    public void setData(byte[] data) {
+    public Avatar setData(byte[] data) {
         this.data = data;
+        return this;
     }
 
-    public Student getStudent() {
-        return student;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Avatar)) return false;
+        Avatar avatar = (Avatar) o;
+        return fileSize == avatar.fileSize && id.equals(avatar.id) && filePath.equals(avatar.filePath) && mediaType.equals(avatar.mediaType) && Arrays.equals(data, avatar.data);
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(id, filePath, fileSize, mediaType);
+        result = 31 * result + Arrays.hashCode(data);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Avatar{" +
+                "id=" + id +
+                ", filePath='" + filePath + '\'' +
+                ", fileSize=" + fileSize +
+                ", mediaType='" + mediaType + '\'' +
+                ", data=" + Arrays.toString(data) +
+                '}';
     }
 }
