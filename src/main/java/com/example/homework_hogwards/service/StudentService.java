@@ -8,7 +8,6 @@ import com.example.homework_hogwards.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -42,7 +41,7 @@ public class StudentService {
     public List<Student> getAll() {
         return studentRepository.findAll();
     }
-    public Optional<Student> findByAgeBetween(int fromAge, int toAge) {
+    public List<Student> findByAgeBetween(int fromAge, int toAge) {
         return studentRepository.findByAgeBetween(fromAge, toAge);
     }
 

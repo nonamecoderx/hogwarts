@@ -2,6 +2,7 @@ package com.example.homework_hogwards.controller;
 
 import com.example.homework_hogwards.model.Avatar;
 import com.example.homework_hogwards.service.AvatarService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +25,13 @@ public class AvatarController {
     public AvatarController(AvatarService avatarService) {
         this.avatarService = avatarService;
     }
-
+    @GetMapping
+    public Page<Avatar> getAvatars(@RequestParam int pageNum, @RequestParam int pageSize) {
+        if (pageNum <= 0) {
+            pageNum = 1;
+        }
+        return avatarService.getAvatars(pageNum, pageSize);
+    }
     @PostMapping(value ="/{studentId}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadStudentAvatar(@PathVariable Long studentId, @RequestParam MultipartFile avatar) throws IOException {
         if (avatarService.isCorrectFileSize(avatar.getSize())) {

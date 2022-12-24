@@ -6,7 +6,6 @@ import com.example.homework_hogwards.service.StudentService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/student")
@@ -47,7 +46,7 @@ public class StudentController {
         return studentService.findByAge(age);
     }
     @GetMapping("/findByAgeBetween")
-    public Optional<Student> findByAgeBetween(@RequestParam int fromAge, @RequestParam int toAge) {
+    public List<Student> findByAgeBetween(@RequestParam int fromAge, @RequestParam int toAge) {
         return studentService.findByAgeBetween(fromAge, toAge);
     }
 

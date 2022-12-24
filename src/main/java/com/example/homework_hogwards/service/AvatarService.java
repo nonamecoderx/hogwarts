@@ -7,6 +7,8 @@ import com.example.homework_hogwards.model.Student;
 import com.example.homework_hogwards.repository.AvatarRepository;
 import com.example.homework_hogwards.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,7 +84,10 @@ public class AvatarService {
 
         throw new UnsupportedMediaType();
     }
-
+    public Page<Avatar> getAvatars(int pageNum, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNum - 1, pageSize);
+        return avatarRepository.findAll(pageRequest);
+    }
     public boolean isCorrectFileSize(long size) {
         return size > SIZE_LIMIT;
     }
