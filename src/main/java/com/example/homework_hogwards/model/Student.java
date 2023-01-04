@@ -1,16 +1,25 @@
 package com.example.homework_hogwards.model;
 
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import javax.persistence.*;
+import java.util.Objects;
+@Entity
 public class Student {
-    private final Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private int age;
 
-    public Student(Long id, String name, int age) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
+    @OneToOne
+    private Avatar avatar;
+
+    @ManyToOne
+    @JsonManagedReference
+    private Faculty faculty;
+
+    public Student() {
     }
 
     public String getName() {
@@ -38,8 +47,7 @@ public class Student {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Student)) return false;
-        Student student = (Student) o;
+        if (!(o instanceof Student student)) return false;
         return age == student.age && id.equals(student.id) && name.equals(student.name);
     }
 
@@ -51,6 +59,24 @@ public class Student {
     public Student fillByStudent(Student student) {
         name = student.getName();
         age = student.getAge();
+        return this;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public Student setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+        return this;
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public Student setAvatar(Avatar avatar) {
+        this.avatar = avatar;
         return this;
     }
 }

@@ -3,60 +3,75 @@ package com.example.homework_hogwards.service;
 import com.example.homework_hogwards.exception.InvalidIdException;
 import com.example.homework_hogwards.exception.NotFoundException;
 import com.example.homework_hogwards.model.Faculty;
+import com.example.homework_hogwards.model.Student;
+import com.example.homework_hogwards.repository.FacultyRepository;
+import com.example.homework_hogwards.repository.StudentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class FacultyService {
-    private static Long counter = 0L;
-    private final Map<Long, Faculty> faculties;
+    private final FacultyRepository facultyRepository;
+    private final StudentRepository studentRepository;
 
-    public FacultyService() {
-        faculties = new HashMap<>();
-    }
+    private final Logger logger;
 
-    public FacultyService(Map<Long, Faculty> faculties) {
-        this.faculties = faculties;
+    public FacultyService(
+            FacultyRepository facultyRepository,
+            StudentRepository studentRepository
+    ) {
+        this.facultyRepository = facultyRepository;
+        this.studentRepository = studentRepository;
+        this.logger = LoggerFactory.getLogger(FacultyService.class);
     }
 
     public Faculty createFaculty(Faculty faculty) {
-        if (faculty.getId() <= counter) {
-            throw new InvalidIdException();
-        }
-        faculties.put(++counter, faculty);
-        return faculty;
+        logger.info("Was invoked method for faculty createFaculty");
+        return facultyRepository.save(faculty);
     }
 
     public Faculty getFacultyById(Long facultyId) {
-        if (!faculties.containsKey(facultyId)) {
-            throw new NotFoundException();
-        }
-        return faculties.get(facultyId);
+        logger.info("Was invoked method for faculty getFacultyById");
+        return facultyRepository.findById(facultyId).orElseThrow(NotFoundException::new);
     }
 
     public Faculty updateFaculty(Long facultyId, Faculty faculty) {
-        Faculty innerFaculty = getFacultyById(facultyId);
-        return innerFaculty.fillByFaculty(faculty);
+        logger.info("Was invoked method for faculty updateFaculty");
+        Faculty oldFaculty = facultyRepository.findById(faculty.getId()).orElseThrow(InvalidIdException::new);
+        return facultyRepository.save(oldFaculty.fillByFaculty(faculty));
     }
 
     public Faculty deleteFaculty(Long facultyId) {
-        return faculties.remove(getFacultyById(facultyId).getId());
+        logger.info("Was invoked method for faculty deleteFaculty");
+        facultyRepository.deleteById(facultyId);
+        return null;
     }
 
-    public List<Faculty> findByColor(String color) {
-        return faculties
-                .values()
-                .stream()
-                .filter(f -> f.getColor().equals(color))
-                .collect(Collectors.toList());
+    public Optional<Faculty> findByColor(String color) {
+        logger.info("Was invoked method for faculty findByColor");
+        return facultyRepository.findByColor(color);
     }
 
     public List<Faculty> getAll() {
-        return new ArrayList<>(faculties.values());
+        logger.info("Was invoked method for faculty getAll");
+        return facultyRepository.findAll();
+    }
+    public Optional<Faculty> findByColorContainingIgnoreCase(String color) {
+        logger.info("Was invoked method for faculty findByColorContainingIgnoreCase");
+        return facultyRepository.findByColorContainingIgnoreCase(color);
+    }
+    public Optional<Faculty> findByNameContainingIgnoreCase(String name) {
+        logger.info("Was invoked method for faculty findByNameContainingIgnoreCase");
+        return facultyRepository.findByNameContainingIgnoreCase(name);
+    }
+    public Set<Student> getFacultyStudents(Long facultyId) {
+        logger.info("Was invoked method for faculty getFacultyStudents");
+        Faculty faculty = facultyRepository.findById(facultyId).orElseThrow(InvalidIdException::new);
+        return faculty.getStudents();
     }
 }
