@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -65,5 +66,20 @@ public class StudentService {
             return new NotFoundException();
         });
         return student.getFaculty();
+    }
+    public List<String> findStudentsStartNameBySymbol(String symbol) {
+        return studentRepository.findByNameStartingWithIgnoreCase(symbol)
+                .stream()
+                .map(s -> s.getName().toUpperCase())
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    public Double getStudentsAvgAge() {
+        return studentRepository.findAll().stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0)
+                ;
     }
 }

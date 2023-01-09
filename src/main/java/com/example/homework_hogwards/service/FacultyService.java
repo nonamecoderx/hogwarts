@@ -74,4 +74,21 @@ public class FacultyService {
         Faculty faculty = facultyRepository.findById(facultyId).orElseThrow(InvalidIdException::new);
         return faculty.getStudents();
     }
+    public String getFacultyWithLongName() {
+        return facultyRepository.findAll().stream()
+                .max((f1, f2) -> {
+                    int len1 = f1.getName().length();
+                    int len2 = f2.getName().length();
+                    if (len1 < len2) {
+                        return -1;
+                    } else if (len1 > len2) {
+                        return 1;
+                    }
+
+                    return 0;
+                })
+                .map(Faculty::getName)
+                .orElse("")
+                ;
+    }
 }
