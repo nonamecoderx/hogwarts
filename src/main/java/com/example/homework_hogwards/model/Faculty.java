@@ -1,18 +1,24 @@
 package com.example.homework_hogwards.model;
 
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import javax.persistence.*;
+import java.util.Objects;
+import java.util.Set;
+
+@Entity
 public class Faculty {
-    private final Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String color;
 
-    public Faculty(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-    }
+    @JsonBackReference
+    @OneToMany(mappedBy = "faculty")
+    private Set<Student> students;
 
+    public Faculty() {}
     public String getName() {
         return name;
     }
@@ -38,8 +44,7 @@ public class Faculty {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Faculty)) return false;
-        Faculty faculty = (Faculty) o;
+        if (!(o instanceof Faculty faculty)) return false;
         return id.equals(faculty.id) && name.equals(faculty.name) && color.equals(faculty.color);
     }
 
@@ -51,6 +56,14 @@ public class Faculty {
     public Faculty fillByFaculty(Faculty faculty) {
         color = faculty.color;
         name = faculty.name;
+        return this;
+    }
+    public Set<Student> getStudents() {
+        return students;
+    }
+
+    public Faculty setStudents(Set<Student> students) {
+        this.students = students;
         return this;
     }
 }
